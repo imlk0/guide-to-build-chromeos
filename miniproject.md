@@ -192,7 +192,7 @@ yay tigervnc
 ```
 
 Then connect to `127.0.0.1:5900`
-![1571549219672](/home/imlk/workspace/fydeos/1571549219672.png)
+![1571549219672](./1571549219672.png)
 
 Congratulation to yourself !
 
@@ -230,9 +230,9 @@ cros_workon_make --board=${BOARD} sys-kernel/chromeos-kernel-4_19 --install
 ./update_kernel.sh --board=${BOARD} --remote=127.0.0.1 --ssh_port=9222 --private_key=/mnt/host/source/src/build/images/amd64-generic/latest/id_rsa
 ```
 
-![1571559748530](/home/imlk/workspace/fydeos/1571559748530.png)
+![1571559748530](./1571559748530.png)
 
-![1571560172106](/home/imlk/workspace/fydeos/1571560172106.png)
+![1571560172106](./1571560172106.png)
 
 
 ### Method 2
@@ -410,7 +410,7 @@ sudo docker run -p 8080:8080 --rm -ti devserver-img
 ```
 ### Visit
 Now you can open your browser and visit `http://localhost:8080/`
-![1571425495636](/home/imlk/workspace/fydeos/1571425495636.png)
+![1571425495636](./1571425495636.png)
 
 
 ## 0x04 Connecting all the dots
@@ -444,7 +444,7 @@ Test connection in crOS instance
 ```
 curl http://172.17.0.1:8080/
 ```
-![1571577633763](/home/imlk/workspace/fydeos/1571577633763.png)
+![1571577633763](./1571577633763.png)
 
 ### Move payload into devserver
 ```sh
@@ -455,7 +455,7 @@ curl http://172.17.0.1:8080/
 (docker) mkdir -p static/archive/amd64-generic/R78-12499.36.2019_10_20_1142-a1/test/
 
 # copy image file into docker
-(host) sudo docker cp /home/imlk/workspace/fydeos/disk/chromiumos/imgs/chromiumos_test_image.bin 028b9537aad3:/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/
+(host) sudo docker cp ./disk/chromiumos/imgs/chromiumos_test_image.bin 028b9537aad3:/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/
 ```
 ### Do some test
 - Test get resource list:
@@ -472,7 +472,7 @@ This resource resides temporarily at <a href='http://172.17.0.1:8080/static/amd6
 ```sh
 update_engine_client --update --omaha_url=172.17.0.1:8080/xbuddy/amd64-generic/R78-12499.36.2019_10_20_1142-a1/test/
 ```
-![1571584991461](/home/imlk/workspace/fydeos/1571584991461.png)
+![1571584991461](./1571584991461.png)
 
 refer: 
 https://chromium.googlesource.com/chromiumos/docs/+/master/xbuddy.md
