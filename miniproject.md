@@ -130,22 +130,22 @@ If you only want to speed up the operation in some specific directory, you can u
 - Use goma distributed compiler service
   goma is some kind of replacement of distcc+ccache. Through which you utilize a group of computers to build. 
 
-  **goma-client**: program which hooks a compile request and sends it to a backend compile server
-  **goma-server**: program which works as a wrapper of backend service that implements the Remote Execution API.
-  **backend service**: program which execute the compile request, runs on many computers.
-  	eg:
-  	`Buildfarm` (which you should deploy by yourself)
-  	`Remote Build Execution` (based on GCP)
-https://chromium.googlesource.com/infra/goma/server/
-https://chromium.googlesource.com/infra/goma/client
-https://github.com/bazelbuild/remote-apis
+  **goma-client**: program which hooks a compile request and sends it to a backend compile server  
+  **goma-server**: program which works as a wrapper of backend service that implements the Remote Execution API.  
+  **backend service**: program which execute the compile request, runs on many computers.  
+  	eg:  
+  	`Buildfarm` (which you should deploy by yourself)  
+  	`Remote Build Execution` (based on GCP)  
+https://chromium.googlesource.com/infra/goma/server/  
+https://chromium.googlesource.com/infra/goma/client  
+https://github.com/bazelbuild/remote-apis  
 
 #### Build all packages
 ```sh
 ./build_packages --board=${BOARD}
 ```
-> Notice: the build process of chromium may be difficult, you can use `emerge-${BOARD} --getbinpkgonly chromeos-chrome` to directly use the prebuilt version. refer: https://wiki.gentoo.org/wiki/Binary_package_guide
-But in this way your api-keys will not be baked into your binary. You can also providing Keys at Runtime. refer: http://www.chromium.org/developers/how-tos/api-keys
+> Notice: the build process of chromium may be difficult, you can use `emerge-${BOARD} --getbinpkgonly chromeos-chrome` to directly use the prebuilt version. refer: https://wiki.gentoo.org/wiki/Binary_package_guide  
+> But in this way your api-keys will not be baked into your binary. You can also providing Keys at Runtime. refer: http://www.chromium.org/developers/how-tos/api-keys
 
 
 #### Build image
@@ -474,13 +474,13 @@ curl http://172.17.0.1:8080/
 (host) sudo docker cp ./disk/chromiumos/imgs/chromiumos_test_image.bin 028b9537aad3:/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/
 ```
 ### file_path <=> xbuddy_path mapping
-The mapping rule was not documented in Google's Guide.
+The mapping rule was not documented in Google's Guide. 
 I found the rule by reading an error message. 
-When I make a Http request `http://172.17.0.1:8080/xbuddy/amd64-generic/R78-12499.36.2019_10_20_1142-a1/test/`, an error message occurred and said that cannot find file names`/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/chromiumos_test_image.bin`.
 
-so that I found the mapping rule is:
+I made a http request `http://172.17.0.1:8080/xbuddy/amd64-generic/R78-12499.36.2019_10_20_1142-a1/test/`, an error message occurred and said that cannot find file names`/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/chromiumos_test_image.bin`.
+
+so that I found the mapping rule is:  
 `http://172.17.0.1:8080/xbuddy/${board}/${version}/${image_type}/ <=> static_dir/${board}/${version}/chromiumos_${image_type}_image.bin`
-
 
 ### Do some test
 - Test get resource list:
@@ -499,7 +499,7 @@ update_engine_client --update --omaha_url=172.17.0.1:8080/xbuddy/amd64-generic/R
 ```
 ![1571584991461](./1571584991461.png)
 
-refer: 
+refer:  
 https://chromium.googlesource.com/chromiumos/docs/+/master/xbuddy.md
 https://chromium.googlesource.com/chromiumos/chromite/+/master/docs/devserver.md
 https://chromium.googlesource.com/chromiumos/platform/dev-util/+/master/devserver.py
