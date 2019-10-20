@@ -128,7 +128,7 @@ If you only want to speed up the operation in some specific directory, you can u
 	sudo mount --bind /path/to/hold/the/dir/on/SSD/ /path/to/the/dir/on/HDD/
 	```
 - Use goma distributed compiler service
-  goma is some kind of replacement of distcc+ccache.
+  goma is some kind of replacement of distcc+ccache. Through which you utilize a group of computers to build. 
 
   **goma-client**: program which hooks a compile request and sends it to a backend compile server
   **goma-server**: program which works as a wrapper of backend service that implements the Remote Execution API.
@@ -213,9 +213,10 @@ Linux localhost 4.14.141-13420-gee2dd2c9d958 #1 SMP PREEMPT Fri Oct 18 18:21:48 
 ```
 Now to replace with release version v4.19.
 
-### Method 1
-Assume that you had build vm image using default kernel and was able to run in qemu.
+### (Method 1) Use ./update_kernel.sh
+`./update_kernel.sh` is a shell script which use `ssh` to connect to your device and export the new Kernel files.
 
+Assume that you had build vm image using default kernel and was able to run in qemu.
 Now compile kernel v4.19:
 ```sh
 cd ../../src/third_party/kernel/v4.19/
@@ -235,7 +236,10 @@ cros_workon_make --board=${BOARD} sys-kernel/chromeos-kernel-4_19 --install
 ![1571560172106](./1571560172106.png)
 
 
-### Method 2
+### (Method 2) Modify chromiumos_test_image.bin
+This method is similar with Method 1, but I was failed to run on qemu. I finally got a qemu image file, but stuck at "Booting the kernel". 
+One possible reason is that the files `./image_to_vm.sh` used to build vm image included something belong to the old Kernel.
+
 Assume that you had build test image using default kernel.
 
 Now compile kernel v4.19:
@@ -269,6 +273,18 @@ sudo tar vxpf /build/amd64-generic/packages/sys-kernel/chromeos-kernel-4_19-9999
 ./image_to_vm.sh --test_image --board=${BOARD}
 ```
 
+### Any other methods ?
+I want to know if there are some better methods to apply another Kernel.
+I have tried to manually unmerge the old kernel and merge the new Kernel, built I was failed execute `./build_image`:
+```
+emerge: there are no binary packages to satisfy "sys-kernel/chromeos-kernel-4_14" for /mnt/host/source/src/build/images/amd64-generic/R78-12499.36.2019_10_20_2049-a1/rootfs/.
+(dependency required by "virtual/linux-sources-1-r18::chromiumos" [binary])
+(dependency required by "virtual/target-chromium-os-1-r130::chromiumos" [binary])
+(dependency required by "virtual/target-chrome-os-1-r23::chromeos" [binary])
+(dependency required by "virtual/target-os-1.5-r1::chromeos" [binary])
+(dependency required by "virtual/target-os" [argument])
+```
+There must be some mechanism which I don't know. I will try it another time.
 
 ## 0x03 CrOS devserver in docker
 
@@ -427,7 +443,7 @@ docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         TX packets 4954  bytes 7880596 (7.5 MiB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
-get 172.17.0.1
+the host' ip is `172.17.0.1`
 
 - Modify
 ```
@@ -440,7 +456,7 @@ sudo vim /etc/lsb-release
 ```sh
 sudo docker run -p 8080:8080 --rm -ti  devserver
 ```
-Test connection in crOS instance
+Test connection in CrOS instance
 ```
 curl http://172.17.0.1:8080/
 ```
@@ -450,13 +466,22 @@ curl http://172.17.0.1:8080/
 ```sh
 # create a new instance
 (host) sudo docker run -p 8080:8080 --rm -ti devserver
-(host) sudo docker exec -it 9b02b50a0bf9 bash
 
-(docker) mkdir -p static/archive/amd64-generic/R78-12499.36.2019_10_20_1142-a1/test/
+# create dir to hold resource
+(host) sudo docker exec -it 9b02b50a0bf9 "mkdir -p /devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/"
 
 # copy image file into docker
 (host) sudo docker cp ./disk/chromiumos/imgs/chromiumos_test_image.bin 028b9537aad3:/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/
 ```
+### file_path <=> xbuddy_path mapping
+The mapping rule was not documented in Google's Guide.
+I found the rule by reading an error message. 
+When I make a Http request `http://172.17.0.1:8080/xbuddy/amd64-generic/R78-12499.36.2019_10_20_1142-a1/test/`, an error message occurred and said that cannot find file names`/devserver/dev-util/static/amd64-generic/R78-12499.36.2019_10_20_1142-a1/chromiumos_test_image.bin`.
+
+so that I found the mapping rule is:
+`http://172.17.0.1:8080/xbuddy/${board}/${version}/${image_type}/ <=> static_dir/${board}/${version}/chromiumos_${image_type}_image.bin`
+
+
 ### Do some test
 - Test get resource list:
 ```sh
