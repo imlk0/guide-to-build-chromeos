@@ -2,7 +2,7 @@
 
 ## 0x00 Connectivity, tools & infrastructure readiness
 ### Network
-##### proxychains
+#### proxychains
 
 To download the chromium os source code, an proxy is needed. I have a server in advance, but it is complicated to do global proxy on Linux. At first I solved it by using:
 
@@ -13,11 +13,11 @@ Any connections in bash process will be automatically proxyed.
 
 > Notice: you can use proxychains to sync the source code in terminal, but it doesn't work after you enter the chroot environment.
 
-##### redsocks2 + iptables
+#### redsocks2 + iptables
 
 `redsocks2` is used to convert `socks5` tunnel, and `iptables` to redirect tcp requests 
 
-##### /etc/hosts
+#### /etc/hosts
 
 If you do not have udp proxy, you'd better add the following items into your `/etc/hosts` (chroot)  so that  `gsutil.py`  could work.
 
@@ -78,7 +78,7 @@ repo sync -j4
 
 
 ### Build Chromium OS
-##### Enter chroot
+#### Enter chroot
 Run `cros_sdk` to download and create a chroot environment
 ```sh
 cros_sdk
@@ -99,7 +99,7 @@ Make sure that you have python package `setuptools` installed.
 Because repo is using python2, you should also check that you have installed it through `pip2`. 
 
 
-##### Select a board
+#### Select a board
 ```sh
 export BOARD=amd64-generic
 ```
@@ -109,12 +109,12 @@ setup_board --force --board=amd64-generic
 ```
 The flag`--force` will delete the previous one board file(would useful if you have to change your board type to make a new build)
 
-##### Set "chronos" user passwd
+#### Set "chronos" user passwd
 ```sh
 ./set_shared_user_password.sh
 ```
 
-##### (Optinal) Some ways to speed up building
+#### (Optinal) Some ways to speed up building
 - Use SSD instead of HDD if disk speed becomes a bottleneck.
 - Use SSD to "replace" some directory of HDD
 If you only want to speed up the operation in some specific directory, you can use the `mount --bind` command to achieve it.
@@ -140,7 +140,7 @@ https://chromium.googlesource.com/infra/goma/server/
 https://chromium.googlesource.com/infra/goma/client
 https://github.com/bazelbuild/remote-apis
 
-##### Build all packages
+#### Build all packages
 ```sh
 ./build_packages --board=${BOARD}
 ```
@@ -148,7 +148,7 @@ https://github.com/bazelbuild/remote-apis
 But in this way your api-keys will not be baked into your binary. You can also providing Keys at Runtime. refer: http://www.chromium.org/developers/how-tos/api-keys
 
 
-##### Build image
+#### Build image
 ```sh
 ./build_image --board=${BOARD} --noenable_rootfs_verification test
 ```
@@ -159,7 +159,7 @@ The `--noenable_rootfs_verification` flag will turn off verified boot. A `test` 
 Your image files will be located at `/mnt/host/source/src/build/images/{BOARD}}/latest/`
 
 
-##### Build VM usable image
+#### Build VM usable image
 ```sh
 ./image_to_vm.sh --test_image --board=${BOARD}
 ```
@@ -167,7 +167,7 @@ The flag `--test_image` will build VM usable image based on the `chromiumos_test
 
 The image file will be generated at  `/mnt/host/source/src/build/images/amd64-generic/latest/chromiumos_qemu_image.bin`
 
-##### Run image via vm
+#### Run image via vm
 ```sh
 cros_vm --start --image-path /mnt/host/source/src/build/images/amd64-generic/latest/chromiumos_qemu_image.bin
 ```
@@ -175,7 +175,7 @@ From the program output log, we know that:
 - VNC server is running on `127.0.0.1:5900`
 - sshd is listen on `127.0.0.1:9222`
 
-##### Establish SSH connection
+#### Establish SSH connection
 Connect using username `chronos` and password `test0000`
 ```
 [imlk@imlk-pc ~]$ ssh -p 9222 chronos@127.0.0.1 
@@ -184,7 +184,7 @@ Linux localhost 4.14.141-13420-gee2dd2c9d958 #1 SMP PREEMPT Fri Oct 18 18:21:48 
 chronos@localhost ~ $ 
 ```
 
-##### Establish VNC connection
+#### Establish VNC connection
 A VNC client is need to connect to qemu. We use tigervnc to do it.
 ```sh
 # on ArchLinux
@@ -196,7 +196,7 @@ Then connect to `127.0.0.1:5900`
 
 Congratulation to yourself !
 
-##### API-Keys
+#### API-Keys
 You can providing keys at runtime. Connect to your instance via ssh and execute:
 ```ssh
 echo -e "GOOGLE_API_KEY=your_api_key\n\
